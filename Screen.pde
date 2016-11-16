@@ -1,4 +1,4 @@
-//abstract class Screen {
-//  public Screen() {
-//  }
-//}
+abstract class Screen {
+  public Screen() {
+  }
+}

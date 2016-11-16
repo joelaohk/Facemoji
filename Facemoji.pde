@@ -9,8 +9,12 @@ int keyH;
 int funcBarY;
 int funcBarH;
 
-void setup() {
+void settings() {
   size(405,720);
+}
+
+void setup() {
+  
   cp5 = new ControlP5(this);
   speechOppSet();
   
