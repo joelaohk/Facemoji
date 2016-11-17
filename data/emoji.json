@@ -1,0 +1,12 @@
+{
+	"emoji": [
+		{
+			"name": "smile",
+			"filename": "smile.png"
+		},
+		{
+			"name": "cry",
+			"filename": "cry.png"
+		}
+	]
+}

@@ -1,15 +1,21 @@
-enum Emoji {
+
+
+public class Emoji {
   final private static String EMOJIFOLDER = "emoji/";
   
-  private static final SMILE = new Emoji("");
-  
+  private String name;
   private String filePath;
   
-  private Emoji(String filename) {
-    filePath = EMOJIFOLDER + filename + ".png";
+  public Emoji(String name, String filename) {
+    this.name = name;
+    this.filePath = EMOJIFOLDER + filename + ".png";
   }
   
-  private String getPath() {
+  public String getName() {
+    return name;
+  }
+  
+  public String getPath() {
     return filePath;
   }
   
