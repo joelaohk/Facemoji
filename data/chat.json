@@ -1,0 +1,14 @@
+{
+	"chat": [
+	{
+		"side": 0,
+		"msg": "Whazzup dude?",
+		"emoji": "smile"
+	},
+	{
+		"side": 1,
+		"msg": "Very nice",
+		"emoji": "laugh"
+	}
+	]
+}

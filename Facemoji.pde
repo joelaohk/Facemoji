@@ -26,7 +26,7 @@ void setup() {
   cp5.addTextfield("draft")
      .setPosition(7,height-7-28)
      .setColor(0)
-     .setColorBackground(232232232) 
+     .setColorBackground(0) 
      .setSize(width*2/3,28)
      .setFocus(false)
      .setFont(createFont("arial",15))
@@ -50,6 +50,8 @@ void setup() {
 
 void draw() {
   background(244);
+  fill(0,0,200);
+  rect(0,0,width,100);
   speechBubbleOpposite("What\'s up dud?");
   speechBubbleSelf("Gay!!!");
   image(keyboard,0,keyY,width,keyH);
@@ -59,20 +61,21 @@ void draw() {
 void speechOppSet() {
   t2 = cp5.addTextlabel("opposite")
           .setFont(createFont("Arial",20))
-          .setPosition(24, 26)
-          .setColorValue(255);
+          .setPosition(24, 26 + 90)
+          .setColorValue(255)
+          .setSize(40,24);
 }
 
 void speechBubbleSelf(String content) {
-  cp5.addTextlabel("self")
+  cp5.addTextlabel("selfside")
      .setFont(createFont("Arial",20))
-     .setPosition(width-24, 35)
-     .setColorValue(#00bfff)
+     .setPosition(width-24, 35 + 90)
+     .setColorValue(0)
      .setText(content)
      .setWidth(70);
   noStroke();
   fill(255);
-  rect(width - 16 - t2.getWidth()+20, 20 + t2.getHeight()+16 + 9, t2.getWidth()+20, t2.getHeight()+16, 30, 30, 3, 30);
+  rect(width - 16 - t2.getWidth()-20, 20 + t2.getHeight()+16 + 9 + 90, t2.getWidth()+20, t2.getHeight()+16, 30, 30, 3, 30);
 }
 
 void speechBubbleOpposite(String content) {
@@ -80,7 +83,7 @@ void speechBubbleOpposite(String content) {
   
   noStroke();
   fill(#00bfff);
-  rect(16, 20, t2.getWidth()+20, t2.getHeight()+16, 30, 30, 30, 3);
+  rect(16, 20 + 90, t2.getWidth()+20, t2.getHeight()+16, 30, 30, 30, 3);
   t2.draw(this);
 }
 
@@ -116,6 +119,8 @@ void prepareEmojiData() {
     Emoji e = new Emoji(eName, eFilename);
     emojiList.add(e);
   }
+  
+  
 }
 
 boolean keyboardTyped() {

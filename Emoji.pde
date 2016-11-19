@@ -8,10 +8,10 @@ public class Emoji {
   
   public Emoji(String name, String filename) {
     this.name = name;
-    this.filePath = EMOJIFOLDER + filename + ".png";
+    this.filePath = EMOJIFOLDER + filename;
   }
   
-  public String getName() {
+  public String getEName() {
     return name;
   }
   
