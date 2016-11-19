@@ -1,14 +1,39 @@
 {
-	"chat": [
+	"chat":[
 	{
-		"side": 0,
-		"msg": "Whazzup dude?",
-		"emoji": "smile"
+		"side":0,
+		"msg":"Hello",
+		"emoji":"emoji_grin"
 	},
 	{
-		"side": 1,
-		"msg": "Very nice",
-		"emoji": "laugh"
+		"side":1,
+		"msg":"Hi",
+		"emoji":"emoji_grin"
+	},
+	{
+		"side":0,
+		"msg":"Having dinner together tonight?",
+		"emoji":""
+	},
+	{
+		"side":1,
+		"msg":"I got something to do now.",
+		"emoji":"emoji_shock"
+	},
+	{
+		"side":0,
+		"msg":"Oh",
+		"emoji":"emoji_bored"
+	},
+	{
+		"side":1,
+		"msg":"We can have dinner at 19:00, OK?",
+		"emoji":"emoji_grin"
+	},
+		{
+		"side":0,
+		"msg":"OK, See you then",
+		"emoji":"emoji_grin"
 	}
 	]
-}
+}		

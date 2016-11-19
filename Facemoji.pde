@@ -3,42 +3,44 @@ import controlP5.*;
 import java.util.*;
 
 ControlP5 cp5;
-Textlabel t2;
 PImage keyboard;
 Textfield draft;
 Button facemojiTrigger;
-JSONArray emojis;
-ArrayList<Emoji> emojiList;
+ArrayList<Chat> chats;
 int keyY;
 int keyH;
 int funcBarY;
 int funcBarH;
+int chatStartXPos = 10;
+int chatStartYPos = 100;
+final int chatTextSize = 15;
+final int chatBorderPad = 10;
+final int chatMargin = 10;
 
 void settings() {
   size(405,720);
 }
 
 void setup() {
+  chats = new ArrayList<Chat>();
   
   cp5 = new ControlP5(this);
-  speechOppSet();
-  
   cp5.addTextfield("draft")
      .setPosition(7,height-7-28)
      .setColor(0)
-     .setColorBackground(0) 
+     .setColorBackground(#FAFAFA) 
      .setSize(width*2/3,28)
      .setFocus(false)
      .setFont(createFont("arial",15))
      .setLabelVisible(false);
-     
-  prepareEmojiData();
   draft = cp5.get(Textfield.class, "draft");
   
   facemojiTrigger = cp5.addButton("trigger")
                        .setPosition(7 + width*2/3 + 30,height-7-28)
                        .setImage(loadImage("icon.png"))
                        .setSize(26,28);
+  
+  loadChatData();
   
   keyboard = loadImage("keyboard.jpg");
   keyY = height;
@@ -49,42 +51,66 @@ void setup() {
 
 
 void draw() {
-  background(244);
-  fill(0,0,200);
-  rect(0,0,width,100);
-  speechBubbleOpposite("What\'s up dud?");
-  speechBubbleSelf("Gay!!!");
+  background(220);
+  chatTopBar("Bart", "contact/bart.png");
+  displayChats();
   image(keyboard,0,keyY,width,keyH);
   funcBar();
 }
 
-void speechOppSet() {
-  t2 = cp5.addTextlabel("opposite")
-          .setFont(createFont("Arial",20))
-          .setPosition(24, 26 + 90)
-          .setColorValue(255)
-          .setSize(40,24);
+void chatTopBar(String contact, String contactImgPath) {
+  fill(240);
+  rect(0,0,width,90);
+  textSize(32);
+  textAlign(CENTER);
+  fill(50);
+  text(contact,width/2,45+15);
+  image(loadImage("back.png"), 15, 15, 60, 60);
+  image(loadImage(contactImgPath), width-75, 15, 60, 60);
 }
 
 void speechBubbleSelf(String content) {
-  cp5.addTextlabel("selfside")
-     .setFont(createFont("Arial",20))
-     .setPosition(width-24, 35 + 90)
-     .setColorValue(0)
-     .setText(content)
-     .setWidth(70);
+  textSize(chatTextSize);
+  
   noStroke();
   fill(255);
-  rect(width - 16 - t2.getWidth()-20, 20 + t2.getHeight()+16 + 9 + 90, t2.getWidth()+20, t2.getHeight()+16, 30, 30, 3, 30);
+  float chatfinalXPos = width - chatStartXPos - textWidth(content) - chatBorderPad*2;
+  float chatfinalWidth = textWidth(content) + chatBorderPad*2;
+  float chatfinalHeight = chatTextSize + chatBorderPad*2;
+  rect(chatfinalXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 3, 30);
+  
+  textAlign(LEFT);
+  fill(0);
+  text(content, width - chatStartXPos - textWidth(content) - chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
+  
+  chatStartYPos += chatfinalHeight + chatMargin;
 }
 
 void speechBubbleOpposite(String content) {
-  t2.setText(content);
+  textSize(chatTextSize);
   
   noStroke();
   fill(#00bfff);
-  rect(16, 20 + 90, t2.getWidth()+20, t2.getHeight()+16, 30, 30, 30, 3);
-  t2.draw(this);
+  float chatfinalWidth = textWidth(content) + chatBorderPad*2;
+  float chatfinalHeight = chatTextSize + chatBorderPad*2;
+  rect(chatStartXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 30, 3);
+  
+  textAlign(LEFT);
+  fill(255);
+  text(content, chatStartXPos + chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
+  
+  chatStartYPos += chatfinalHeight + chatMargin;
+}
+
+void displayChats() {
+  for (Chat c:chats) {
+    if (c.getSide() == 0) {
+      speechBubbleSelf(c.getMsg());
+    } else {
+      speechBubbleOpposite(c.getMsg());
+    }
+  }
+  chatStartYPos = 100;
 }
 
 void funcBar() {
@@ -109,18 +135,16 @@ void mousePressed() {
   }
 }
 
-void prepareEmojiData() {
-  emojis = loadJSONObject("emoji.json").getJSONArray("emoji");
-  emojiList = new ArrayList<Emoji>();
-  for (int i = 0; i < emojis.size(); i++) {
-    JSONObject emoji = emojis.getJSONObject(i);
-    String eName = emoji.getString("name");
-    String eFilename = emoji.getString("filename");
-    Emoji e = new Emoji(eName, eFilename);
-    emojiList.add(e);
+void loadChatData() {
+  JSONArray chatJsonA = loadJSONObject("chat.json").getJSONArray("chat");
+  for (int i = 0; i < chatJsonA.size(); i++) {
+    JSONObject chatJsonO = chatJsonA.getJSONObject(i);
+    int side = chatJsonO.getInt("side");
+    String msg = chatJsonO.getString("msg");
+    String emoji = chatJsonO.getString("emoji");
+    Chat chat = new Chat(side, msg, emoji);
+    chats.add(chat);
   }
-  
-  
 }
 
 boolean keyboardTyped() {

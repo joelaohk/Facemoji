@@ -6,9 +6,9 @@ public class Emoji {
   private String name;
   private String filePath;
   
-  public Emoji(String name, String filename) {
+  public Emoji(String name) {
     this.name = name;
-    this.filePath = EMOJIFOLDER + filename;
+    this.filePath = EMOJIFOLDER + name + ".png";
   }
   
   public String getEName() {
