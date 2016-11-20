@@ -1,5 +1,7 @@
 
 
+
+
 class Chat {
   private int side;
   private String message;

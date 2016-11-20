@@ -1,12 +1,16 @@
 import controlP5.*;
 //import com.temboo.core.*;
 import java.util.*;
+import processing.video.*;
 
 ControlP5 cp5;
+PImage contactImg;
+PImage backButton;
 PImage keyboard;
 Textfield draft;
 Button facemojiTrigger;
 ArrayList<Chat> chats;
+Capture cam;
 int keyY;
 int keyH;
 int funcBarY;
@@ -28,17 +32,24 @@ void setup() {
   cp5.addTextfield("draft")
      .setPosition(7,height-7-28)
      .setColor(0)
-     .setColorBackground(#FAFAFA) 
+     .setColorBackground(#FAFAFA)
      .setSize(width*2/3,28)
      .setFocus(false)
      .setFont(createFont("arial",15))
      .setLabelVisible(false);
   draft = cp5.get(Textfield.class, "draft");
   
+  PImage icon = loadImage("icon.png");
+  icon.resize(26,28);
   facemojiTrigger = cp5.addButton("trigger")
+                       //.setPosition(7 + width*2/3 + 30,height-7-28)
                        .setPosition(7 + width*2/3 + 30,height-7-28)
-                       .setImage(loadImage("icon.png"))
+                       .setImage(icon)
                        .setSize(26,28);
+  backButton = loadImage("back.png");
+  contactImg = loadImage("contact/bart.png");
+  JSONArray contactJsonA = loadJSONObject("contact.json").getJSONArray("contact");
+  
   
   loadChatData();
   
@@ -52,63 +63,91 @@ void setup() {
 
 void draw() {
   background(220);
-  chatTopBar("Bart", "contact/bart.png");
+  chatTopBar("Bart");
   displayChats();
   image(keyboard,0,keyY,width,keyH);
   funcBar();
 }
 
-void chatTopBar(String contact, String contactImgPath) {
+void chatTopBar(String contact) {
   fill(240);
   rect(0,0,width,90);
   textSize(32);
   textAlign(CENTER);
   fill(50);
   text(contact,width/2,45+15);
-  image(loadImage("back.png"), 15, 15, 60, 60);
-  image(loadImage(contactImgPath), width-75, 15, 60, 60);
+  image(backButton, 15, 15, 60, 60);
+  image(contactImg, width-75, 15, 60, 60);
 }
 
-void speechBubbleSelf(String content) {
+void speechBubbleSelf(String content, int index) {
   textSize(chatTextSize);
   
+  Textarea ta = cp5.addTextarea(str(index))
+                   .setWidth(200)
+                   .setFont(createFont("arial",chatTextSize))
+                   .setColor(0)
+                   .setLineHeight(chatTextSize+2)
+                   .setText(content);
+                   
+  float wid = min(200,textWidth(content));
+  float hei = chatTextSize;
+  if (wid == 200) {
+    hei *= ceil(textWidth(content)/200);
+  }
+  ta.setPosition(width - chatStartXPos - wid - chatBorderPad, chatStartYPos + chatBorderPad);
   noStroke();
   fill(255);
-  float chatfinalXPos = width - chatStartXPos - textWidth(content) - chatBorderPad*2;
-  float chatfinalWidth = textWidth(content) + chatBorderPad*2;
-  float chatfinalHeight = chatTextSize + chatBorderPad*2;
+  float chatfinalXPos = width - chatStartXPos - wid - chatBorderPad*2;
+  float chatfinalWidth = wid + chatBorderPad*2;
+  float chatfinalHeight = hei + chatBorderPad*2;
   rect(chatfinalXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 3, 30);
-  
-  textAlign(LEFT);
-  fill(0);
-  text(content, width - chatStartXPos - textWidth(content) - chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
+  //textAlign(LEFT);
+  //fill(0);
+  //text(content, width - chatStartXPos - textWidth(content) - chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
   
   chatStartYPos += chatfinalHeight + chatMargin;
 }
 
-void speechBubbleOpposite(String content) {
+void speechBubbleOpposite(String content, int index) {
   textSize(chatTextSize);
+  
+  Textarea ta = cp5.addTextarea(str(index))
+                   .setWidth(200)
+                   .setFont(createFont("arial",chatTextSize))
+                   .setColor(255)
+                   .setLineHeight(chatTextSize+2)
+                   .setText(content);
+  
+  float wid = min(200,textWidth(content));
+  float hei = chatTextSize;
+  if (wid == 200) {
+    hei *= ceil(textWidth(content)/200);
+  }
+  ta.setPosition(chatStartXPos + chatBorderPad, chatStartYPos + chatBorderPad);
   
   noStroke();
   fill(#00bfff);
-  float chatfinalWidth = textWidth(content) + chatBorderPad*2;
-  float chatfinalHeight = chatTextSize + chatBorderPad*2;
+  float chatfinalWidth = wid + chatBorderPad*2;
+  float chatfinalHeight = hei + chatBorderPad*2;
   rect(chatStartXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 30, 3);
   
-  textAlign(LEFT);
-  fill(255);
-  text(content, chatStartXPos + chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
+  //textAlign(LEFT);
+  //fill(255);
+  //text(content, chatStartXPos + chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
   
   chatStartYPos += chatfinalHeight + chatMargin;
 }
 
 void displayChats() {
+  int idx = 0;
   for (Chat c:chats) {
     if (c.getSide() == 0) {
-      speechBubbleSelf(c.getMsg());
+      speechBubbleSelf(c.getMsg(), idx);
     } else {
-      speechBubbleOpposite(c.getMsg());
+      speechBubbleOpposite(c.getMsg(), idx);
     }
+    idx++;
   }
   chatStartYPos = 100;
 }
@@ -119,9 +158,24 @@ void funcBar() {
   rect(0,funcBarY,width,funcBarH);
 }
 
+void controlEvent(ControlEvent theEvent) {
+  if(theEvent.isAssignableFrom(Textfield.class)) {
+    println("controlEvent: accessing a string from controller '"
+            +theEvent.getName()+"': "
+            +theEvent.getStringValue()
+            );
+            
+    Chat c = new Chat(0, draft.getText(), "");
+    chats.add(c);
+  }
+  
+  
+}
+
 void mousePressed() {
   if (draft.isFocus()) {
     draft.setPosition(7,height-keyH-7-28).setFocus(true);
+    facemojiTrigger.setPosition(7 + width*2/3 + 30,height-7-28-keyH);
     keyY = height-keyH;
     funcBarY = height-keyH-funcBarH;
   } else if (!draft.isFocus()) {

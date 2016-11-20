@@ -1,0 +1,16 @@
+{
+	"contact": [
+		{
+			"name": "Homer",
+			"profile_pic": "homer.png"
+		},
+		{
+			"name": "Lisa",
+			"profile_pic": "lisa.png"
+		},
+		{
+			"name": "Bart",
+			"profile_pic": "bart.png"
+		}
+	]
+}
