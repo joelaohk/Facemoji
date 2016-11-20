@@ -2,24 +2,33 @@ import controlP5.*;
 //import com.temboo.core.*;
 import java.util.*;
 import processing.video.*;
+import gab.opencv.*;
+import java.awt.*;
+import oscP5.*;
 
 ControlP5 cp5;
 PImage contactImg;
 PImage backButton;
 PImage keyboard;
 Textfield draft;
-Button facemojiTrigger;
+controlP5.Button facemojiTrigger;
+boolean buttonTriggered = false;
 ArrayList<Chat> chats;
 Capture cam;
+int camY;
 int keyY;
 int keyH;
 int funcBarY;
 int funcBarH;
+boolean funcBarUp = false;
 int chatStartXPos = 10;
 int chatStartYPos = 100;
 final int chatTextSize = 15;
 final int chatBorderPad = 10;
 final int chatMargin = 10;
+
+OpenCV opencv;
+OscP5 oscP5;
 
 void settings() {
   size(405,720);
@@ -36,7 +45,7 @@ void setup() {
      .setSize(width*2/3,28)
      .setFocus(false)
      .setFont(createFont("arial",15))
-     .setLabelVisible(false);
+     .setLabelVisible(true);
   draft = cp5.get(Textfield.class, "draft");
   
   PImage icon = loadImage("icon.png");
@@ -45,16 +54,18 @@ void setup() {
                        //.setPosition(7 + width*2/3 + 30,height-7-28)
                        .setPosition(7 + width*2/3 + 30,height-7-28)
                        .setImage(icon)
-                       .setSize(26,28);
+                       .setSize(26,28)
+                       .setValue(0);
   backButton = loadImage("back.png");
   contactImg = loadImage("contact/bart.png");
-  JSONArray contactJsonA = loadJSONObject("contact.json").getJSONArray("contact");
   
+  cam = new Capture(this, 320, 240);
+  cam.start();
   
   loadChatData();
   
   keyboard = loadImage("keyboard.jpg");
-  keyY = height;
+  keyY = camY = height;
   keyH = 683*width/1242;
   funcBarH = 42;
   funcBarY = height-funcBarH;
@@ -66,6 +77,16 @@ void draw() {
   chatTopBar("Bart");
   displayChats();
   image(keyboard,0,keyY,width,keyH);
+  if (buttonTriggered) {
+    fill(140);
+    rect(0,keyY,width,keyH);
+    if (cam.available()==true) cam.read();
+    pushMatrix();
+    PImage cropped = cam.get((320-keyH)/2,0,keyH,keyH);
+    image(cropped, 0, camY);
+    popMatrix();
+  }
+  
   funcBar();
 }
 
@@ -83,28 +104,30 @@ void chatTopBar(String contact) {
 void speechBubbleSelf(String content, int index) {
   textSize(chatTextSize);
   
-  Textarea ta = cp5.addTextarea(str(index))
-                   .setWidth(200)
-                   .setFont(createFont("arial",chatTextSize))
-                   .setColor(0)
-                   .setLineHeight(chatTextSize+2)
-                   .setText(content);
+  //Textarea ta = cp5.addTextarea(str(index))
+  //                 .setWidth(200)
+  //                 .setFont(createFont("arial",chatTextSize))
+  //                 .setColor(0)
+  //                 .setLineHeight(chatTextSize+2)
+  //                 .setText(content);
                    
   float wid = min(200,textWidth(content));
   float hei = chatTextSize;
   if (wid == 200) {
-    hei *= ceil(textWidth(content)/200);
+    int scaleFact = ceil(textWidth(content)/200);
+    hei *= scaleFact;
+    hei += 10*(scaleFact-1);
   }
-  ta.setPosition(width - chatStartXPos - wid - chatBorderPad, chatStartYPos + chatBorderPad);
+  //ta.setPosition(width - chatStartXPos - wid - chatBorderPad, chatStartYPos + chatBorderPad);
   noStroke();
   fill(255);
   float chatfinalXPos = width - chatStartXPos - wid - chatBorderPad*2;
   float chatfinalWidth = wid + chatBorderPad*2;
   float chatfinalHeight = hei + chatBorderPad*2;
   rect(chatfinalXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 3, 30);
-  //textAlign(LEFT);
-  //fill(0);
-  //text(content, width - chatStartXPos - textWidth(content) - chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
+  textAlign(LEFT);
+  fill(0);
+  text(content, width - chatStartXPos - wid - chatBorderPad, chatStartYPos + chatBorderPad, wid+10, hei+15);
   
   chatStartYPos += chatfinalHeight + chatMargin;
 }
@@ -112,19 +135,21 @@ void speechBubbleSelf(String content, int index) {
 void speechBubbleOpposite(String content, int index) {
   textSize(chatTextSize);
   
-  Textarea ta = cp5.addTextarea(str(index))
-                   .setWidth(200)
-                   .setFont(createFont("arial",chatTextSize))
-                   .setColor(255)
-                   .setLineHeight(chatTextSize+2)
-                   .setText(content);
+  //Textarea ta = cp5.addTextarea(str(index))
+  //                 .setWidth(200)
+  //                 .setFont(createFont("arial",chatTextSize))
+  //                 .setColor(255)
+  //                 .setLineHeight(chatTextSize+2)
+  //                 .setText(content);
   
   float wid = min(200,textWidth(content));
   float hei = chatTextSize;
   if (wid == 200) {
-    hei *= ceil(textWidth(content)/200);
+    int scaleFact = ceil(textWidth(content)/200);
+    hei *= scaleFact;
+    hei += 10*(scaleFact-1);
   }
-  ta.setPosition(chatStartXPos + chatBorderPad, chatStartYPos + chatBorderPad);
+  //ta.setPosition(chatStartXPos + chatBorderPad, chatStartYPos + chatBorderPad);
   
   noStroke();
   fill(#00bfff);
@@ -132,9 +157,9 @@ void speechBubbleOpposite(String content, int index) {
   float chatfinalHeight = hei + chatBorderPad*2;
   rect(chatStartXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 30, 3);
   
-  //textAlign(LEFT);
-  //fill(255);
-  //text(content, chatStartXPos + chatBorderPad, chatStartYPos + chatTextSize + chatBorderPad);
+  textAlign(LEFT);
+  fill(255);
+  text(content, chatStartXPos + chatBorderPad, chatStartYPos + chatBorderPad, wid+10, hei+15);
   
   chatStartYPos += chatfinalHeight + chatMargin;
 }
@@ -174,18 +199,21 @@ void controlEvent(ControlEvent theEvent) {
 
 void mousePressed() {
   if (draft.isFocus()) {
-    draft.setPosition(7,height-keyH-7-28).setFocus(true);
-    facemojiTrigger.setPosition(7 + width*2/3 + 30,height-7-28-keyH);
+    //facemojiTrigger.setValue(0);
     keyY = height-keyH;
-    funcBarY = height-keyH-funcBarH;
+    raiseUpFuncBar();
   } else if (!draft.isFocus()) {
+    if (funcBarUp == true) {
+      return;
+    }
+    
     if (keyboardTyped()) {
       draft.setFocus(true);
       return;
     }
-    draft.setPosition(7,height-7-28).setFocus(false);
+    buttonTriggered = false;
     keyY = height;
-    funcBarY = height-funcBarH;
+    pushdownFuncBar();
   }
 }
 
@@ -199,6 +227,33 @@ void loadChatData() {
     Chat chat = new Chat(side, msg, emoji);
     chats.add(chat);
   }
+  displayChats();
+}
+
+void trigger(int value) {
+  if (!buttonTriggered) {
+    raiseUpFuncBar();
+    keyY = height;
+    camY = height-keyH;
+    buttonTriggered = true;
+  } else {
+    pushdownFuncBar();
+    buttonTriggered = false;
+  }
+}
+
+void raiseUpFuncBar() {
+  draft.setPosition(7,height-keyH-7-28);
+  facemojiTrigger.setPosition(7 + width*2/3 + 30,height-7-28-keyH);
+  funcBarY = height-keyH-funcBarH;
+  funcBarUp = true;
+}
+
+void pushdownFuncBar() {
+  draft.setPosition(7,height-7-28);
+  facemojiTrigger.setPosition(7 + width*2/3 + 30,height-7-28);
+  funcBarY = height-funcBarH;
+  funcBarUp = false;
 }
 
 boolean keyboardTyped() {
