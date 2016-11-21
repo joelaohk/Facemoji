@@ -1,18 +1,11 @@
 
-
-
-
-
-
 class Chat {
   private int side;
   private String message;
-  private Emoji emoji;
   
-  public Chat(int side, String msg, String emojiName) {
+  public Chat(int side, String msg) {
     this.side = side;
     this.message = msg;
-    this.emoji = new Emoji(emojiName);
   }
   
   public int getSide() {
@@ -21,9 +14,5 @@ class Chat {
   
   public String getMsg() {
     return message;
-  }
-  
-  public Emoji getEmoji() {
-    return emoji;
   }
 }
