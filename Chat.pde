@@ -1,9 +1,8 @@
 
-class Chat {
+abstract class Chat {
   private int side;
-  private String message;
   
-  public Chat(int side, String msg) {
+  public Chat(int side) {
     this.side = side;
     this.message = msg;
   }
@@ -12,7 +11,6 @@ class Chat {
     return side;
   }
   
-  public String getMsg() {
-    return message;
-  }
+  public abstract chatBubbleOpposite(float initialX, float yPos);
+  public abstract chatBubbleSelf(float initialX, float yPos);
 }
