@@ -18,8 +18,11 @@ class ChatManager {
     for (int i = 0; i < chatJsonA.size(); i++) {
       JSONObject chatJsonO = chatJsonA.getJSONObject(i);
       int side = chatJsonO.getInt("side");
-      String msg = chatJsonO.getString("msg");
-      Chat chat = new Chat(side, msg);
+      Chat chat;
+      if (chatJsonO.getString("type").equals("text")) {
+        String msg = chatJsonO.getString("msg");
+        chat = new Chat(side, msg);
+      }
       chats.add(chat);
     }
   }
@@ -42,6 +45,7 @@ class ChatManager {
   }
   
   void speechBubbleSelf(String content) {
+    pushMatrix();
     textSize(chatTextSize);
                      
     float wid = min(200,textWidth(content));
@@ -62,9 +66,11 @@ class ChatManager {
     text(content, width - chatStartXPos - wid - chatBorderPad + xPos, chatStartYPos + chatBorderPad, wid+10, hei+15);
     
     chatStartYPos += chatfinalHeight + chatMargin;
+    popMatrix();
   }
   
   void speechBubbleOpposite(String content) {
+    pushMatrix();
     textSize(chatTextSize);
     
     float wid = min(200,textWidth(content));
@@ -86,8 +92,12 @@ class ChatManager {
     text(content, chatStartXPos + chatBorderPad + xPos, chatStartYPos + chatBorderPad, wid+10, hei+15);
     
     chatStartYPos += chatfinalHeight + chatMargin;
+    popMatrix();
   }
   
-  void speechBubbleSelf(PImage emoji) {
+  void speechBubbleSelf(PImage emoji, PImage faceImg) {
+    pushMatrix();
+    fill(255);
+    popMatrix();
   }
 }
