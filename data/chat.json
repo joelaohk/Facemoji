@@ -1,19 +1,25 @@
 {
 	"chat":[
 	{
+		"type": "text",
 		"side":0,
-		"msg":"Hello",
-		"emoji":"grin"
+		"msg":"Hello"
 	},
 	{
+		"type": "text",
 		"side":1,
-		"msg":"Hi",
-		"emoji":"grin"
+		"msg":"Hi"
 	},
 	{
+		"type": "facemoji",
+		"side": 1,
+		"emoji": "grin",
+		"img": "dude.jpg"
+	}
+	{
+		"type": "text",
 		"side":0,
-		"msg":"Having dinner together tonight?",
-		"emoji":""
+		"msg":"Having dinner together tonight?"
 	}
 	]
 }		
