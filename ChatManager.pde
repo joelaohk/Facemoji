@@ -1,15 +1,17 @@
 class ChatManager {
   private ArrayList<Chat> chats;
-  int chatStartXPos;
-  int chatStartYPos;
-  final int chatTextSize = 15;
-  final int chatBorderPad = 10;
-  final int chatMargin = 10;
+  float chatStartXPos;
+  float chatStartYPos;
+  boolean faceDisplayMode = false;
+  PImage displayFace;
+  final float chatBorderPad = 10;
+  final float chatMargin = 10;
   
   public ChatManager() {
     chatStartXPos = 10;
     chatStartYPos = 100;
     chats = new ArrayList<Chat>();
+    loadChatData();
   }
   
   void loadChatData() {
@@ -35,7 +37,23 @@ class ChatManager {
     chats.add(c);
   }
   
-  void displayChats(int x) {
+  float getBubblePadding() {
+    return chatBorderPad;
+  }
+  
+  void chatListMousePressed() {
+    for (Chat c:chats) {
+      if (c.getClass().equals(FacemojiChat.class)) ((FacemojiChat)c).mousePressed();
+    }
+    println("hey!!!");
+  }
+  
+  void setFaceImage(PImage img) {
+    displayFace = img;
+    faceDisplayMode = true;
+  } 
+  
+  void displayChats(float x) {
     float xPos = x;
     for (Chat c:chats) {
       float appendY;
@@ -46,8 +64,34 @@ class ChatManager {
         float initialX = chatStartXPos + xPos;
         appendY = c.speechBubbleOpposite(initialX, chatStartYPos);
       }
-      chatStartYPos += appendY;
+      chatStartYPos += appendY + chatMargin;
     }
     chatStartYPos = 100;
+    if (faceDisplayMode) displayFace();
+  }
+  
+  void setFaceDisplayMode(boolean val) {
+    faceDisplayMode = val;
+  }
+  
+  boolean hoverOnEmoji() {
+    boolean hovered = false;
+    for (Chat c:chats) {
+      if (c.getClass().equals(FacemojiChat.class)) {
+        hovered = ((FacemojiChat)c).emojiHovered();
+        if (hovered) return hovered;
+      }
+    }
+    return hovered;
+  }
+  
+  boolean getDisplayMode() {
+    return faceDisplayMode;
+  }
+  
+  void displayFace() {
+    fill(240);
+    rect(10, 10, width-20, width-20, 30);
+    image(displayFace, 20, 20, width-40, width-40);
   }
 }

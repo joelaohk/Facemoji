@@ -16,12 +16,11 @@ int keyY;
 int keyH;
 boolean keyboardUp = false;
 
+boolean faceDisplayMode = false;
 
 FacemojiPanel panel;
 FuncBar funcBar;
 ChatManager manager;
-OpenCV opencv;
-OscP5 oscP5;
 
 void settings() {
   size(405,720);
@@ -34,10 +33,9 @@ void setup() {
   backButton = loadImage("back.png");
   contactImg = loadImage("contact/bart.png");
   
-  panel = new FacemojiPanel(this, 0);
-  funcBar = new FuncBar(0);
+  panel = new FacemojiPanel(this);
+  funcBar = new FuncBar();
   manager = new ChatManager();
-  manager.loadChatData();
   
   keyboard = loadImage("keyboard.jpg");
   keyY = height;
@@ -68,40 +66,38 @@ void chatTopBar(String contact) {
 }
 
 void controlEvent(ControlEvent theEvent) {
-  if(theEvent.isAssignableFrom(TextInput.class)) {
-    println("controlEvent: accessing a string from controller '"
-            +theEvent.getName()+"': "
-            +theEvent.getStringValue()
-            );
-    Chat c = new Chat(0, draft.getText());
-    manager.addChat(c);
-  }
-  
-  
+  funcBar.controlEvent(theEvent);
 }
 
 void mousePressed() {
-  if (!(funcBar.isUp() && reachPanel())) {
-    funcBar.pushDownFuncBar();
-    if (keyboardUp) pushDownKeyboard();
-    if (panel.isPanelUp()) panel.pushDownPanel();
+  if (!manager.hoverOnEmoji() && !manager.getDisplayMode()){
+    if (!(funcBar.isUp() && reachPanel())) {
+      funcBar.pushDownFuncBar();
+      if (keyboardUp) pushDownKeyboard();
+      if (panel.isPanelUp()) panel.pushDownPanel();
+    }
   }
+  manager.chatListMousePressed();
 }
 
 void trigger(int value) {
-  println(value);
-  if (!funcBar.isUp()) {
-    funcBar.raiseUpFuncBar();
-    panel.raiseUpPanel();
-  } else {
-    if (!panel.isPanelUp()) {
-      pushDownKeyboard();
-      panel.raiseUpPanel();
-    } else {
-      panel.pushDownPanel();
-      raiseUpKeyboard();
-    }
-  }
+  funcBar.trigger(value);
+}
+
+public void found(int i) {
+  panel.found(i);
+}
+
+public void mouthWidthReceived(float w) {
+  panel.mouthWidthReceived(w);
+}
+
+public void mouthHeightReceived(float h) {
+  panel.mouthHeightReceived(h);
+}
+
+void oscEvent(OscMessage m) {
+  panel.oscEvent(m);
 }
 
 void raiseUpKeyboard() {

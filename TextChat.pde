@@ -1,18 +1,18 @@
 class TextChat extends Chat {
   private String message;
+  private final int chatTextSize = 15;
   
-  
-  public Chat(int side, String msg) {
+  public TextChat(int side, String msg) {
     super(side);
     this.message = msg;
   }
   
-  public float chatBubbleSelf(int initialX, int yPos) {
+  public float speechBubbleSelf(float initialX, float yPos) {
     textSize(chatTextSize);            
-    float wid = min(200,textWidth(content));
+    float wid = min(200,textWidth(message));
     float hei = chatTextSize;
     if (wid == 200) {
-      int scaleFact = ceil(textWidth(content)/200);
+      int scaleFact = ceil(textWidth(message)/200);
       hei *= scaleFact;
       hei += 10*(scaleFact-1);
     }
@@ -28,15 +28,17 @@ class TextChat extends Chat {
     
     float textXPos = bubbleFinalXPos + manager.getBubblePadding();
     float textYPos = yPos + manager.getBubblePadding();
-    text(content, textXPos, textYPos, wid+10, hei+15);
+    text(message, textXPos, textYPos, wid+10, hei+15);
+    
+    return bubbleFinalHeight;
   }
   
-  public float chatBubbleOpposite(int initialX, int yPos) {
+  public float speechBubbleOpposite(float initialX, float yPos) {
     textSize(chatTextSize);            
-    float wid = min(200,textWidth(content));
+    float wid = min(200,textWidth(message));
     float hei = chatTextSize;
     if (wid == 200) {
-      int scaleFact = ceil(textWidth(content)/200);
+      int scaleFact = ceil(textWidth(message)/200);
       hei *= scaleFact;
       hei += 10*(scaleFact-1);
     }
@@ -48,10 +50,12 @@ class TextChat extends Chat {
     float bubbleFinalHeight = hei + manager.getBubblePadding()*2;
     rect(bubbleFinalXPos, yPos, bubbleFinalWidth, bubbleFinalHeight, 30, 30, 30, 3);
     textAlign(LEFT);
-    fill(0);
+    fill(255);
     
     float textXPos = bubbleFinalXPos + manager.getBubblePadding();
     float textYPos = yPos + manager.getBubblePadding();
-    text(content, textXPos, textYPos, wid+10, hei+15);
+    text(message, textXPos, textYPos, wid+10, hei+15);
+    
+    return bubbleFinalHeight;
   }
 }

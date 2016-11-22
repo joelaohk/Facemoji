@@ -1,12 +1,14 @@
 {
 	"emoji": [
-		{
-			"name": "smile",
-			"filename": "smile.png"
-		},
-		{
-			"name": "cry",
-			"filename": "cry.png"
-		}
+		"bored.png",
+		"flushed.png",
+		"grin.png",
+		"kissing_face.png",
+		"pensive_face.png",
+		"scream.png",
+		"smiling_open_mouth.png",
+		"smiling.png",
+		"stuck_out_tongue.png",
+		"tears_of_joy.png"
 	]
 }

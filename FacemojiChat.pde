@@ -2,6 +2,7 @@ class FacemojiChat extends Chat {
   PImage emoji;
   PImage face;
   int emojiSideLength = 40;
+  float emojiXPos, emojiYPos;
   boolean emojiClicked = false;
   
   public FacemojiChat(int side, PImage _emoji, PImage _face) {
@@ -11,49 +12,55 @@ class FacemojiChat extends Chat {
   }
   
   void mousePressed() {
-    if (emojiHovered() && !emojiClicked) imageClicked = true;
-    if (imageClicked) emojiClicked = false;
+    println("clicked: " + emojiClicked);
+    if (emojiHovered() && !emojiClicked) emojiClicked = true;
+    else if (emojiClicked) {
+      emojiClicked = false;
+      manager.setFaceDisplayMode(false);
+    }
+    println(emojiClicked);
+    println(emojiXPos + " " + emojiYPos);
   }
   
-  float chatBubbleSelf(float initialX, float yPos) {
+  float speechBubbleSelf(float initialX, float yPos) {
     float bubbleFinalXPos = initialX - emojiSideLength;
     float bubbleSideLength = emojiSideLength + manager.getBubblePadding()*2;
     pushMatrix();
     noStroke();
     fill(255);
-    rect(bubblefinalXPos, yPos, bubbleSideLength, bubbleSideLength, 30, 30, 3, 30);
+    rect(bubbleFinalXPos, yPos, bubbleSideLength, bubbleSideLength, 30, 30, 3, 30);
     emojiXPos = bubbleFinalXPos + manager.getBubblePadding();
     emojiYPos = yPos + manager.getBubblePadding();
     image(emoji, emojiXPos, emojiYPos, emojiSideLength, emojiSideLength);
-    if (imageClicked) displayFace();
+    if (emojiClicked) displayFace();
     popMatrix();
     return bubbleSideLength;
   }
   
-  float chatBubbleOpposite(float initialX, float yPos) {
+  float speechBubbleOpposite(float initialX, float yPos) {
     float bubbleFinalXPos = initialX;
     float bubbleSideLength = emojiSideLength + manager.getBubblePadding()*2;
     pushMatrix();
     noStroke();
     fill(#00bfff);
-    rect(chatFinalXPos, yPos, bubbleSideLength, bubbleSideLength, 30, 30, 30, 3);
-    float emojiXPos = bubbleFinalXPos + manager.getBubblePadding();
-    float emojiYPos = yPos + manager.getBubblePadding();
+    rect(bubbleFinalXPos, yPos, bubbleSideLength, bubbleSideLength, 30, 30, 30, 3);
+    emojiXPos = bubbleFinalXPos + manager.getBubblePadding();
+    emojiYPos = yPos + manager.getBubblePadding();
     image(emoji, emojiXPos, emojiYPos, emojiSideLength, emojiSideLength);
-    if (imageClicked) displayFace();
+    if (emojiClicked) displayFace();
     popMatrix();
     return bubbleSideLength;
   }
   
   boolean emojiHovered() {
-    int dx = mouseX - emojiXPos;
-    int dy = mouseY - emojiYPos;
-    return (dx => 0 && dx <= emojiSideLength && dy => 0 && dy <= emojiSideLength);
+    float dx = mouseX - emojiXPos;
+    float dy = mouseY - emojiYPos;
+    boolean hovered = (dx >= 0 && dx <= emojiSideLength && dy >= 0 && dy <= emojiSideLength);
+    println(hovered);
+    return hovered;
   }
   
   void displayFace() {
-    fill(240);
-    rect(10, 10, width-20, width-20, 30);
-    image(face, 20, 20, width-40, width-40);
+    manager.setFaceImage(face);
   }
 }

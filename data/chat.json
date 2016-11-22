@@ -14,8 +14,8 @@
 		"type": "facemoji",
 		"side": 1,
 		"emoji": "grin.png",
-		"img": "dude.jpg"
-	}
+		"face": "dude.png"
+	},
 	{
 		"type": "text",
 		"side":0,

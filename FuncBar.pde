@@ -1,5 +1,6 @@
 class FuncBar {
   int barHeight = 42;
+  float xPos = 0;
   float yPos;
   boolean funcBarUp = false;
   controlP5.Button facemojiTrigger;
@@ -17,11 +18,13 @@ class FuncBar {
     
     facemojiTrigger = cp5.addButton("trigger")
                          .setImage(icon)
+                         .setPosition(xPos + 7 + width*2/3 + 30,height-7-28)
                          .setSize(26,28)
                          .setValue(0);
     
     draft = new TextInput(cp5, "draft");
     draft.setColor(0)
+         .setPosition(xPos + 7,height-7-28)
          .setColorBackground(#FAFAFA)
          .setSize(width*2/3,28)
          .setFocus(false)
@@ -31,13 +34,12 @@ class FuncBar {
     
   }
   
-  void display(float xPos) {
+  void display(float x) {
+    xPos = x;
     pushMatrix();
     fill(255);
     noStroke();
     rect(xPos,yPos,width,barHeight);
-    draft.setPosition(xPos + 7,height-7-28);
-    facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,height-7-28);
     popMatrix();
   }
   
@@ -69,5 +71,34 @@ class FuncBar {
   
   int getHeight () {
     return barHeight;
+  }
+  
+  void trigger(int value) {
+    println(value);
+    if (!funcBar.isUp()) {
+      funcBar.raiseUpFuncBar();
+      panel.raiseUpPanel();
+    } else {
+      if (!panel.isPanelUp()) {
+        pushDownKeyboard();
+        panel.raiseUpPanel();
+      } else {
+        panel.pushDownPanel();
+        raiseUpKeyboard();
+      }
+    }
+  }
+  
+  void controlEvent(ControlEvent theEvent) {
+    if(theEvent.isAssignableFrom(TextInput.class)) {
+      println("controlEvent: accessing a string from controller '"
+              +theEvent.getName()+"': "
+              +theEvent.getStringValue()
+              );
+      Chat c = new TextChat(0, draft.getText());
+      manager.addChat(c);
+    }
+    
+    
   }
 }
