@@ -1,15 +1,13 @@
 class FuncBar {
-  int xPos, yPos;
-  int barHeight;
+  int barHeight = 42;
+  float yPos;
   boolean funcBarUp = false;
   controlP5.Button facemojiTrigger;
   TextInput draft;
   PImage icon;
   PImage icon_on;
   
-  public FuncBar(int x) {
-    barHeight = 42;
-    xPos = x;
+  public FuncBar() {
     yPos = height-barHeight;
     
     icon = loadImage("icon.png");
@@ -18,14 +16,12 @@ class FuncBar {
     icon_on.resize(26,28);
     
     facemojiTrigger = cp5.addButton("trigger")
-                         .setPosition(xPos + 7 + width*2/3 + 30,height-7-28)
                          .setImage(icon)
                          .setSize(26,28)
                          .setValue(0);
     
     draft = new TextInput(cp5, "draft");
-    draft.setPosition(xPos + 7,height-7-28)
-         .setColor(0)
+    draft.setColor(0)
          .setColorBackground(#FAFAFA)
          .setSize(width*2/3,28)
          .setFocus(false)
@@ -35,11 +31,13 @@ class FuncBar {
     
   }
   
-  void display() {
+  void display(float xPos) {
     pushMatrix();
     fill(255);
     noStroke();
     rect(xPos,yPos,width,barHeight);
+    draft.setPosition(xPos + 7,height-7-28);
+    facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,height-7-28);
     popMatrix();
   }
   
@@ -63,10 +61,6 @@ class FuncBar {
   
   void turnOffTrigger() {
     facemojiTrigger.setImage(icon);
-  }
-  
-  void adjustXPos(int x) {
-    xPos = x;
   }
   
   boolean isUp() {
