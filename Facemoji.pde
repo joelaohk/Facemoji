@@ -77,6 +77,7 @@ void mousePressed() {
       if (panel.isPanelUp()) panel.pushDownPanel();
     }
   }
+  panel.mousePressed();
   manager.chatListMousePressed();
 }
 

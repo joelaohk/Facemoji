@@ -80,7 +80,9 @@ class FacemojiPanel {
       }
     }
     imageMode(CORNER);
+    placeEmojiOnFace();
     popMatrix();
+    
   }
   
   void raiseUpPanel() {
@@ -114,8 +116,8 @@ class FacemojiPanel {
           time=0;
           
         emoji=1;
-        println("emoji: "+emoji);
-        println("time: "+time);
+        //println("emoji: "+emoji);
+        //println("time: "+time);
       }
       else if (mouthWidth/mouthHeight>3 && mouthWidth/mouthHeight<8)
       {
@@ -147,7 +149,7 @@ class FacemojiPanel {
         println("time: "+time);
       }
     }
-    if (time>=8) {
+    if (time >= 8) {
       if (emoji==1) 
         emoji_img = loadImage("emoji/scream.png");
       else if (emoji==2)
@@ -155,21 +157,29 @@ class FacemojiPanel {
       else if (emoji==3) 
         emoji_img = loadImage("emoji/bored.png");
         
-      if (faces.length>0)
-      image(emoji_img, camX + faces[0].x, camY + faces[0].y,faces[0].width,faces[0].height);
+      if (faces.length>0) {
+        try {
+          image(emoji_img, camX + faces[0].x, camY + faces[0].y,faces[0].width,faces[0].height);
+        } catch (NullPointerException e) {}
+        
+      }
+      
       
     }
   }
   
   void mousePressed() {
-    if(found > 0 && time >= 8) {
-      float dx = mouseX - camX + faces[0].x;
-      float dy = mouseY - camY + faces[0].y;
-      if (dx > 0 && dx < faces[0].width && dy > 0 && dy < faces[0].height) {
-        Chat c = new FacemojiChat(0, emoji_img, cropped);
-        manager.addChat(c);
+    if (panelUp) {
+      if(faces.length>0) {
+        float dx = mouseX - camX + faces[0].x;
+        float dy = mouseY - camY + faces[0].y;
+        if (dx > 0 && dx < camH && dy > 0 && dy < camH) {
+          Chat c = new FacemojiChat(0, emoji_img, cropped);
+          manager.addChat(c);
+        }
       }
     }
+    
   }
   
   // OSC CALLBACK FUNCTIONS
