@@ -1,6 +1,5 @@
 class ChatManager {
   private ArrayList<Chat> chats;
-  private int xPos;
   int chatStartXPos;
   int chatStartYPos;
   final int chatTextSize = 15;
@@ -21,7 +20,11 @@ class ChatManager {
       Chat chat;
       if (chatJsonO.getString("type").equals("text")) {
         String msg = chatJsonO.getString("msg");
-        chat = new Chat(side, msg);
+        chat = new TextChat(side, msg);
+      } else {
+        PImage emoji = loadImage("emoji/" + chatJsonO.getString("emoji"));
+        PImage face = loadImage("face/" + chatJsonO.getString("face"));
+        chat = new FacemojiChat(side, emoji, face);
       }
       chats.add(chat);
     }
@@ -33,71 +36,18 @@ class ChatManager {
   }
   
   void displayChats(int x) {
-    xPos = x;
+    float xPos = x;
     for (Chat c:chats) {
+      float appendY;
       if (c.getSide() == 0) {
-        speechBubbleSelf(c.getMsg());
+        float initialX = width - chatStartXPos - chatBorderPad*2 + xPos;
+        appendY = c.speechBubbleSelf(initialX, chatStartYPos);
       } else {
-        speechBubbleOpposite(c.getMsg());
+        float initialX = chatStartXPos + xPos;
+        appendY = c.speechBubbleOpposite(initialX, chatStartYPos);
       }
+      chatStartYPos += appendY;
     }
     chatStartYPos = 100;
-  }
-  
-  void speechBubbleSelf(String content) {
-    pushMatrix();
-    textSize(chatTextSize);
-                     
-    float wid = min(200,textWidth(content));
-    float hei = chatTextSize;
-    if (wid == 200) {
-      int scaleFact = ceil(textWidth(content)/200);
-      hei *= scaleFact;
-      hei += 10*(scaleFact-1);
-    }
-    noStroke();
-    fill(255);
-    float chatfinalXPos = width - chatStartXPos - wid - chatBorderPad*2 + xPos;
-    float chatfinalWidth = wid + chatBorderPad*2;
-    float chatfinalHeight = hei + chatBorderPad*2;
-    rect(chatfinalXPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 3, 30);
-    textAlign(LEFT);
-    fill(0);
-    text(content, width - chatStartXPos - wid - chatBorderPad + xPos, chatStartYPos + chatBorderPad, wid+10, hei+15);
-    
-    chatStartYPos += chatfinalHeight + chatMargin;
-    popMatrix();
-  }
-  
-  void speechBubbleOpposite(String content) {
-    pushMatrix();
-    textSize(chatTextSize);
-    
-    float wid = min(200,textWidth(content));
-    float hei = chatTextSize;
-    if (wid == 200) {
-      int scaleFact = ceil(textWidth(content)/200);
-      hei *= scaleFact;
-      hei += 10*(scaleFact-1);
-    }
-    
-    noStroke();
-    fill(#00bfff);
-    float chatfinalWidth = wid + chatBorderPad*2;
-    float chatfinalHeight = hei + chatBorderPad*2;
-    rect(chatStartXPos + xPos, chatStartYPos, chatfinalWidth, chatfinalHeight, 30, 30, 30, 3);
-    
-    textAlign(LEFT);
-    fill(255);
-    text(content, chatStartXPos + chatBorderPad + xPos, chatStartYPos + chatBorderPad, wid+10, hei+15);
-    
-    chatStartYPos += chatfinalHeight + chatMargin;
-    popMatrix();
-  }
-  
-  void speechBubbleSelf(PImage emoji, PImage faceImg) {
-    pushMatrix();
-    fill(255);
-    popMatrix();
   }
 }
