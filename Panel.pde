@@ -1,18 +1,18 @@
 class FacemojiPanel {
   private Capture cam;
-  private int camX, camY;
-  private int camH;
+  private float camY;
+  private float camH;
   private boolean panelUp = false;
   
-  public FacemojiPanel(PApplet pa, int x) {
+  public FacemojiPanel(PApplet pa) {
     cam = new Capture(pa, 320, 240);
     cam.start();
-    camX = x;
     camY = height;
     camH = 683*width/1242;
   }
   
-  public void display() {
+  public void display(float x) {
+    camX = x;
     pushMatrix();
     fill(140);
     rect(camX,camY,width,camH);
