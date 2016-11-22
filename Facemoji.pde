@@ -50,8 +50,8 @@ void draw() {
   chatTopBar("Bart");
   manager.displayChats(0);
   image(keyboard,0,keyY,width,keyH);
-  panel.display();
-  funcBar.display();
+  panel.display(0);
+  funcBar.display(0);
 }
 
 void chatTopBar(String contact) {
