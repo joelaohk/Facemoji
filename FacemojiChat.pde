@@ -1,7 +1,6 @@
 class FacemojiChat extends Chat {
   PImage emoji;
   PImage face;
-  int emojiXPos, emojiYPos;
   int emojiSideLength = 40;
   boolean emojiClicked = false;
   
@@ -16,9 +15,9 @@ class FacemojiChat extends Chat {
     if (imageClicked) emojiClicked = false;
   }
   
-  float chatBubbleSelf(int initialX, int yPos) {
-    int bubbleFinalXPos = initialX - emojiSideLength;
-    int bubbleSideLength = emojiSideLength + manager.getBubblePadding()*2;
+  float chatBubbleSelf(float initialX, float yPos) {
+    float bubbleFinalXPos = initialX - emojiSideLength;
+    float bubbleSideLength = emojiSideLength + manager.getBubblePadding()*2;
     pushMatrix();
     noStroke();
     fill(255);
@@ -31,14 +30,15 @@ class FacemojiChat extends Chat {
     return bubbleSideLength;
   }
   
-  float chatBubbleOpposite(int initialX, int yPos) {
-    int bubbleFinalXPos = initialX;
-    int bubbleSideLength = emojiSideLength + manager.getBubblePadding()*2;
+  float chatBubbleOpposite(float initialX, float yPos) {
+    float bubbleFinalXPos = initialX;
+    float bubbleSideLength = emojiSideLength + manager.getBubblePadding()*2;
+    pushMatrix();
     noStroke();
     fill(#00bfff);
     rect(chatFinalXPos, yPos, bubbleSideLength, bubbleSideLength, 30, 30, 30, 3);
-    emojiXPos = bubbleFinalXPos + manager.getBubblePadding();
-    emojiYPos = yPos + manager.getBubblePadding();
+    float emojiXPos = bubbleFinalXPos + manager.getBubblePadding();
+    float emojiYPos = yPos + manager.getBubblePadding();
     image(emoji, emojiXPos, emojiYPos, emojiSideLength, emojiSideLength);
     if (imageClicked) displayFace();
     popMatrix();
