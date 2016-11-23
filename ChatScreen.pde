@@ -33,7 +33,7 @@ class ChatScreen {
   }
     
   public void display(float xPos, int contactIdx) {
-    chatTopBar.display(xPos, contacts.get(contactIdx));
+    topBar.display(xPos, contacts.get(contactIdx));
     manager.displayChats(xPos);
     image(keyboard,xPos,keyY,width,keyH);
     panel.display(xPos);
