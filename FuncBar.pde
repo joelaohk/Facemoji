@@ -2,6 +2,7 @@ class FuncBar {
   int barHeight = 42;
   float xPos;
   float yPos;
+  float sdBtnW, sdBtnH;
   boolean funcBarUp = false;
   controlP5.Button facemojiTrigger;
   TextInput draft;
@@ -10,6 +11,8 @@ class FuncBar {
   
   public FuncBar() {
     yPos = height-barHeight;
+    sdBtnW = 45;
+    sdBtnH = 28;
     
     icon = loadImage("icon.png");
     icon_on = loadImage("icon_on.png");
@@ -41,9 +44,10 @@ class FuncBar {
     facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,yPos+7);
     draft.setPosition(xPos + 7,yPos+7);
     if (!draft.getText().equals("")) {
-      textSize(28);
+      textSize(25);
+      textMode(CENTER);
       fill(#00bfff);
-      text("Send", xPos + width*2/3 + 65, yPos+7);
+      text("Send", xPos + width*2/3 + 65, yPos+7, sdBtnW, sdBtnH);
     }      
     popMatrix();
   }
@@ -74,6 +78,14 @@ class FuncBar {
     return barHeight;
   }
   
+  void mousePressed() {
+    float dx = mouseX - (xPos + width*2/3 + 65);
+    float dy = mouseY - yPos+7;
+    if (dx > 0 && dx < sdBtnW && dy > 0 && dy < sdBtnH) {
+      draft.submit();
+    }
+  }
+  
   void trigger(int value) {
     println(value);
     if (!funcBar.isUp()) {
@@ -85,7 +97,7 @@ class FuncBar {
         screen1.getPanel().raiseUpPanel();
       } else {
         screen1.getPanel().pushDownPanel();
-        raiseUpKeyboard();
+        screen1.raiseUpKeyboard();
       }
     }
   }
