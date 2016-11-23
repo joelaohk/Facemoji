@@ -1,6 +1,7 @@
 class TextChat extends Chat {
   private String message;
   private final int chatTextSize = 15;
+  private final float chatTextMaxWidth = 250.0;
   
   public TextChat(int side, String msg) {
     super(side);
@@ -9,10 +10,10 @@ class TextChat extends Chat {
   
   public float speechBubbleSelf(float initialX, float yPos) {
     textSize(chatTextSize);            
-    float wid = min(200,textWidth(message));
+    float wid = min(chatTextMaxWidth,textWidth(message));
     float hei = chatTextSize;
-    if (wid == 200) {
-      int scaleFact = ceil(textWidth(message)/200);
+    if (wid == chatTextMaxWidth) {
+      int scaleFact = ceil(textWidth(message)/chatTextMaxWidth);
       hei *= scaleFact;
       hei += 10*(scaleFact-1);
     }
@@ -28,7 +29,7 @@ class TextChat extends Chat {
     
     float textXPos = bubbleFinalXPos + chatScreen.getChatManager().getBubblePadding();
     float textYPos = yPos + chatScreen.getChatManager().getBubblePadding();
-    text(message, textXPos, textYPos, wid+10, hei+15);
+    text(message, textXPos, textYPos, wid+10, hei+10);
     
     return bubbleFinalHeight;
   }

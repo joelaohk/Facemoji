@@ -7,6 +7,11 @@ import java.awt.*;
 import oscP5.*;
 
 int currScreen;
+int currContact;
+
+float chatScreenXPos;
+
+ContactScreen contactScreen;
 ChatScreen chatScreen;
 ControlP5 cp5;
 
@@ -16,7 +21,10 @@ void settings() {
 
 void setup() {
   cp5 = new ControlP5(this);
-  currScreen = 1;
+  currScreen = 0;
+  currContact = 0;
+  chatScreenXPos = width;
+  contactScreen = new ContactScreen();
   chatScreen = new ChatScreen(this);
   
 }
@@ -24,7 +32,10 @@ void setup() {
 
 void draw() {
   background(220);
-  chatScreen.display(0,0);
+  contactScreen.display(0);
+  chatScreen.display(chatScreenXPos,currContact);
+  if (currScreen == 0) chatScreenSlideOut();
+  if (currScreen == 1) chatScreenSlideIn();
 }
 
 void controlEvent(ControlEvent theEvent) {
@@ -32,7 +43,28 @@ void controlEvent(ControlEvent theEvent) {
 }
 
 void mousePressed() {
+  if (currScreen == 0) contactScreen.mousePressed();
   if (currScreen == 1) chatScreen.mousePressed();
+}
+
+void setCurrScreen(int i) {
+  currScreen = i;
+}
+
+void setCurrContact(int i) {
+  currContact = i;
+}
+
+void chatScreenSlideIn() {
+  if (chatScreenXPos > 0) {
+    chatScreenXPos -= 45;
+  }
+}
+
+void chatScreenSlideOut() {
+  if (chatScreenXPos < width) {
+    chatScreenXPos += 45;
+  }
 }
 
 void trigger(int value) {

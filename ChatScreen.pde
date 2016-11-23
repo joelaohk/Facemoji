@@ -1,6 +1,5 @@
 class ChatScreen {
   private float xPos;
-  private ControlP5 cp5;
   private PImage keyboard;
   private int keyY;
   private int keyH;
@@ -30,6 +29,10 @@ class ChatScreen {
     
   public void display(float x, int contactIdx) {
     xPos = x;
+    pushMatrix();
+    fill(220);
+    rect(xPos,0,width,height);
+    popMatrix();
     topBar.display(xPos, contacts.get(contactIdx));
     manager.displayChats(xPos);
     image(keyboard,xPos,keyY,width,keyH);
@@ -61,6 +64,7 @@ class ChatScreen {
         if (panel.isPanelUp()) panel.pushDownPanel();
       }
     }
+    topBar.mousePressed();
     panel.mousePressed();
     funcBar.mousePressed();
     manager.chatListMousePressed();
