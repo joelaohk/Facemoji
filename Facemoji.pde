@@ -16,8 +16,9 @@ int keyY;
 int keyH;
 boolean keyboardUp = false;
 
-boolean faceDisplayMode = false;
+ArrayList<Contact> contacts;
 
+ChatTopBar topBar;
 FacemojiPanel panel;
 FuncBar funcBar;
 ChatManager manager;
@@ -31,7 +32,9 @@ void setup() {
   cp5 = new ControlP5(this);
   
   backButton = loadImage("back.png");
-  contactImg = loadImage("contact/bart.png");
+  contacts = new ArrayList<Contact>();
+  prepareContacts();
+  topBar = new ChatTopBar();
   
   panel = new FacemojiPanel(this);
   funcBar = new FuncBar();
@@ -45,24 +48,23 @@ void setup() {
 
 void draw() {
   background(220);
-  chatTopBar("Bart");
+  chatTopBar.display(0, contacts.get(0));
   manager.displayChats(0);
   image(keyboard,0,keyY,width,keyH);
   panel.display(0);
   funcBar.display(0);
 }
 
-void chatTopBar(String contact) {
-  pushMatrix();
-  fill(240);
-  rect(0,0,width,90);
-  textSize(32);
-  textAlign(CENTER);
-  fill(50);
-  text(contact,width/2,45+15);
-  image(backButton, 15, 15, 60, 60);
-  image(contactImg, width-75, 15, 60, 60);
-  popMatrix();
+void prepareContacts() {
+  JSONArray contactJsonA = loadJSONObject("contact.json").getJSONArray("contact");
+  for (int i = 0; i < contactJsonA.size(); i++) {
+    Contact c;
+    JSONObject contactJsonO = contactJsonA.getJSONObject(i);
+    String name = contactJsonO.getString("name");
+    PImage profilePic = loadImage("contact/" + contactJsonO.getString("profile_pic"));
+    c = new Contact(name, profilePic);
+    contacts.add(c);
+  }
 }
 
 void controlEvent(ControlEvent theEvent) {
