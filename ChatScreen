@@ -15,15 +15,15 @@ class ChatScreen {
   private FuncBar funcBar;
   private ChatManager manager;
   
-  public ChatScreen() {
-    cp5 = new ControlP5(this);
+  public ChatScreen(PApplet pa) {
+    cp5 = new ControlP5(pa);
 
     backButton = loadImage("back.png");
     contacts = new ArrayList<Contact>();
     prepareContacts();
     topBar = new ChatTopBar();
     
-    panel = new FacemojiPanel(this);
+    panel = new FacemojiPanel(pa);
     funcBar = new FuncBar();
     manager = new ChatManager();
     
