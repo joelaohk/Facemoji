@@ -5,13 +5,13 @@ class TextInput extends Textfield {
   
   @Override
   void onClick() {
-    if (!funcBar.isUp()) {
-      funcBar.raiseUpFuncBar();
-      raiseUpKeyboard();
+    if (!screen1.getFuncBar().isUp()) {
+      screen1.getFuncBar().raiseUpFuncBar();
+      screen1.raiseUpKeyboard();
     } else {
-      if (!keyboardUp) {
-        panel.pushDownPanel();
-        raiseUpKeyboard();
+      if (!screen1.keyboardUp) {
+        screen1.getPanel.pushDownPanel();
+        screen1.raiseUpKeyboard();
       }
     }
   }
