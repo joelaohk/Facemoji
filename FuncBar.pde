@@ -10,9 +10,10 @@ class FuncBar {
   PImage icon_on;
   
   public FuncBar() {
+    
     yPos = height-barHeight;
-    sdBtnW = 45;
-    sdBtnH = 28;
+    sdBtnW = 55;
+    sdBtnH = 35;
     
     icon = loadImage("icon.png");
     icon_on = loadImage("icon_on.png");
@@ -44,16 +45,15 @@ class FuncBar {
     facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,yPos+7);
     draft.setPosition(xPos + 7,yPos+7);
     if (!draft.getText().equals("")) {
-      textSize(25);
-      textMode(CENTER);
+      textSize(20);
       fill(#00bfff);
-      text("Send", xPos + width*2/3 + 65, yPos+7, sdBtnW, sdBtnH);
+      text("Send", xPos + width*2/3 + 70, yPos+barHeight/2-10, sdBtnW, sdBtnH);
     }      
     popMatrix();
   }
   
   void raiseUpFuncBar() {
-    yPos = height-keyH-barHeight;
+    yPos = height-chatScreen.getKeyboardHeight()-barHeight;
     funcBarUp = true;
   }
   
@@ -79,20 +79,21 @@ class FuncBar {
   }
   
   void mousePressed() {
-    float dx = mouseX - (xPos + width*2/3 + 65);
-    float dy = mouseY - yPos+7;
-    if (dx > 0 && dx < sdBtnW && dy > 0 && dy < sdBtnH) {
+    float dx = mouseX - (xPos + width*2.0/3.0 + 70);
+    float dy = mouseY - yPos+barHeight/2.0-10;
+    if (dx > 0 && dx < sdBtnW && dy > 0 && dy < sdBtnH && !draft.getText().equals("")) {
+      println("dude");
       draft.submit();
     }
   }
   
   void trigger(int value) {
     println(value);
-    if (!funcBar.isUp()) {
+    if (!chatScreen.getFuncBar().isUp()) {
       raiseUpFuncBar();
       chatScreen.getPanel().raiseUpPanel();
     } else {
-      if (!panel.isPanelUp()) {
+      if (!chatScreen.getPanel().isPanelUp()) {
         chatScreen.pushDownKeyboard();
         chatScreen.getPanel().raiseUpPanel();
       } else {

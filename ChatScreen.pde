@@ -1,8 +1,6 @@
 class ChatScreen {
   private float xPos;
   private ControlP5 cp5;
-  private PImage contactImg;
-  private PImage backButton;
   private PImage keyboard;
   private int keyY;
   private int keyH;
@@ -16,9 +14,7 @@ class ChatScreen {
   private ChatManager manager;
   
   public ChatScreen(PApplet pa) {
-    cp5 = new ControlP5(pa);
-
-    backButton = loadImage("back.png");
+    
     contacts = new ArrayList<Contact>();
     prepareContacts();
     topBar = new ChatTopBar();
@@ -32,7 +28,8 @@ class ChatScreen {
     keyH = 683*width/1242;
   }
     
-  public void display(float xPos, int contactIdx) {
+  public void display(float x, int contactIdx) {
+    xPos = x;
     topBar.display(xPos, contacts.get(contactIdx));
     manager.displayChats(xPos);
     image(keyboard,xPos,keyY,width,keyH);
@@ -65,6 +62,7 @@ class ChatScreen {
       }
     }
     panel.mousePressed();
+    funcBar.mousePressed();
     manager.chatListMousePressed();
   }
   
@@ -112,6 +110,10 @@ class ChatScreen {
   
   ChatManager getChatManager() {
     return manager;
+  }
+  
+  float getKeyboardHeight() {
+    return keyH;
   }
 
   boolean reachPanel() {

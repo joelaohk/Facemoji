@@ -8,14 +8,17 @@ import oscP5.*;
 
 int currScreen;
 ChatScreen chatScreen;
+ControlP5 cp5;
 
 void settings() {
   size(405,720);
 }
 
 void setup() {
+  cp5 = new ControlP5(this);
   currScreen = 1;
   chatScreen = new ChatScreen(this);
+  
 }
 
 
@@ -25,7 +28,7 @@ void draw() {
 }
 
 void controlEvent(ControlEvent theEvent) {
-  if (currScreen == 1) funcBar.controlEvent(theEvent);
+  if (currScreen == 1) chatScreen.getFuncBar().controlEvent(theEvent);
 }
 
 void mousePressed() {

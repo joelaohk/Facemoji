@@ -20,14 +20,14 @@ class TextChat extends Chat {
     noStroke();
     fill(255);
     float bubbleFinalXPos = initialX - wid;
-    float bubbleFinalWidth = wid + manager.getBubblePadding()*2;
-    float bubbleFinalHeight = hei + manager.getBubblePadding()*2;
+    float bubbleFinalWidth = wid + chatScreen.getChatManager().getBubblePadding()*2;
+    float bubbleFinalHeight = hei + chatScreen.getChatManager().getBubblePadding()*2;
     rect(bubbleFinalXPos, yPos, bubbleFinalWidth, bubbleFinalHeight, 30, 30, 3, 30);
     textAlign(LEFT);
     fill(0);
     
-    float textXPos = bubbleFinalXPos + manager.getBubblePadding();
-    float textYPos = yPos + manager.getBubblePadding();
+    float textXPos = bubbleFinalXPos + chatScreen.getChatManager().getBubblePadding();
+    float textYPos = yPos + chatScreen.getChatManager().getBubblePadding();
     text(message, textXPos, textYPos, wid+10, hei+15);
     
     return bubbleFinalHeight;
@@ -46,14 +46,14 @@ class TextChat extends Chat {
     noStroke();
     fill(#00bfff);
     float bubbleFinalXPos = initialX;
-    float bubbleFinalWidth = wid + manager.getBubblePadding()*2;
-    float bubbleFinalHeight = hei + manager.getBubblePadding()*2;
+    float bubbleFinalWidth = wid + chatScreen.getChatManager().getBubblePadding()*2;
+    float bubbleFinalHeight = hei + chatScreen.getChatManager().getBubblePadding()*2;
     rect(bubbleFinalXPos, yPos, bubbleFinalWidth, bubbleFinalHeight, 30, 30, 30, 3);
     textAlign(LEFT);
     fill(255);
     
-    float textXPos = bubbleFinalXPos + manager.getBubblePadding();
-    float textYPos = yPos + manager.getBubblePadding();
+    float textXPos = bubbleFinalXPos + chatScreen.getChatManager().getBubblePadding();
+    float textYPos = yPos + chatScreen.getChatManager().getBubblePadding();
     text(message, textXPos, textYPos, wid+10, hei+15);
     
     return bubbleFinalHeight;
