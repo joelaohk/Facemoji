@@ -1,7 +1,7 @@
 class ChatTopBar {
   private PImage backButton;
   
-  public ChatTopBar(Contact c) {
+  public ChatTopBar() {
     backButton = loadImage("back.png");
   }
 
