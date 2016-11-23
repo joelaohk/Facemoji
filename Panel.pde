@@ -87,13 +87,13 @@ class FacemojiPanel {
   
   void raiseUpPanel() {
     camY = height - camH;
-    screen1.getFuncBar().turnOnTrigger();
+    chatScreen.getFuncBar().turnOnTrigger();
     panelUp = true;
   }
   
   void pushDownPanel() {
     camY = height;
-    screen1.getFuncBar().turnOffTrigger();
+    chatScreen.getFuncBar().turnOffTrigger();
     panelUp = false;
   }
   
