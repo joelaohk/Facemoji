@@ -97,6 +97,22 @@ class ChatScreen {
     keyY = height;
     keyboardUp = false;
   }
+  
+  ChatTopBar getTopBar() {
+    return topBar;
+  }
+  
+  FacemojiPanel getPanel() {
+    return panel;
+  }
+  
+  FuncBar getFuncBar() {
+    return funcBar;
+  }
+  
+  ChatManager getChatManager() {
+    return manager;
+  }
 
   boolean reachPanel() {
     if (mouseY>=height-keyH-funcBar.getHeight() && mouseY<=height) {
