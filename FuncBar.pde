@@ -1,6 +1,6 @@
 class FuncBar {
   int barHeight = 42;
-  float xPos = 0;
+  float xPos;
   float yPos;
   boolean funcBarUp = false;
   controlP5.Button facemojiTrigger;
@@ -18,13 +18,11 @@ class FuncBar {
     
     facemojiTrigger = cp5.addButton("trigger")
                          .setImage(icon)
-                         .setPosition(xPos + 7 + width*2/3 + 30,height-7-28)
                          .setSize(26,28)
                          .setValue(0);
     
     draft = new TextInput(cp5, "draft");
     draft.setColor(0)
-         .setPosition(xPos + 7,height-7-28)
          .setColorBackground(#FAFAFA)
          .setSize(width*2/3,28)
          .setFocus(false)
@@ -40,19 +38,22 @@ class FuncBar {
     fill(255);
     noStroke();
     rect(xPos,yPos,width,barHeight);
+    facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,yPos+7);
+    draft.setPosition(xPos + 7,yPos+7);
+    if (!draft.getText().equals("")) {
+      textSize(28);
+      fill(#00bfff);
+      text("Send", xPos + width*2/3 + 65, yPos+7);
+    }      
     popMatrix();
   }
   
   void raiseUpFuncBar() {
-    draft.setPosition(xPos + 7,height-keyH-7-28);
-    facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,height-7-28-keyH);
     yPos = height-keyH-barHeight;
     funcBarUp = true;
   }
   
   void pushDownFuncBar() {
-    draft.setPosition(xPos + 7,height-7-28);
-    facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,height-7-28);
     yPos = height-barHeight;
     funcBarUp = false;
   }
@@ -76,14 +77,14 @@ class FuncBar {
   void trigger(int value) {
     println(value);
     if (!funcBar.isUp()) {
-      funcBar.raiseUpFuncBar();
-      panel.raiseUpPanel();
+      raiseUpFuncBar();
+      screen1.getPanel().raiseUpPanel();
     } else {
       if (!panel.isPanelUp()) {
-        pushDownKeyboard();
-        panel.raiseUpPanel();
+        screen1.pushDownKeyboard();
+        screen1.getPanel().raiseUpPanel();
       } else {
-        panel.pushDownPanel();
+        screen1.getPanel().pushDownPanel();
         raiseUpKeyboard();
       }
     }
@@ -96,7 +97,7 @@ class FuncBar {
               +theEvent.getStringValue()
               );
       Chat c = new TextChat(0, draft.getText());
-      manager.addChat(c);
+      screen1.getChatManager().addChat(c);
     }
     
     
