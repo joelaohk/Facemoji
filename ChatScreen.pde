@@ -6,7 +6,7 @@ class ChatScreen {
   private PImage keyboard;
   private int keyY;
   private int keyH;
-  private boolean keyboardUp = false;
+  boolean keyboardUp = false;
 
   private ArrayList<Contact> contacts;
 
