@@ -171,8 +171,8 @@ class FacemojiPanel {
   void mousePressed() {
     if (panelUp) {
       if(faces.length>0) {
-        float dx = mouseX - camX + faces[0].x;
-        float dy = mouseY - camY + faces[0].y;
+        float dx = mouseX - (camX + faces[0].x);
+        float dy = mouseY - (camY + faces[0].y);
         if (dx > 0 && dx < faces[0].width && dy > 0 && dy < faces[0].height) {
           Chat c = new FacemojiChat(0, emoji_img, cropped);
           manager.addChat(c);
