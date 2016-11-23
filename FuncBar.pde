@@ -90,14 +90,14 @@ class FuncBar {
     println(value);
     if (!funcBar.isUp()) {
       raiseUpFuncBar();
-      screen1.getPanel().raiseUpPanel();
+      chatScreen.getPanel().raiseUpPanel();
     } else {
       if (!panel.isPanelUp()) {
-        screen1.pushDownKeyboard();
-        screen1.getPanel().raiseUpPanel();
+        chatScreen.pushDownKeyboard();
+        chatScreen.getPanel().raiseUpPanel();
       } else {
-        screen1.getPanel().pushDownPanel();
-        screen1.raiseUpKeyboard();
+        chatScreen.getPanel().pushDownPanel();
+        chatScreen.raiseUpKeyboard();
       }
     }
   }
@@ -109,7 +109,7 @@ class FuncBar {
               +theEvent.getStringValue()
               );
       Chat c = new TextChat(0, draft.getText());
-      screen1.getChatManager().addChat(c);
+      chatScreen.getChatManager().addChat(c);
     }
     
     
