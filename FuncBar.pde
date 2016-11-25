@@ -8,6 +8,8 @@ class FuncBar {
   TextInput draft;
   PImage icon;
   PImage icon_on;
+  PImage camera;
+  PImage send;
   
   public FuncBar() {
     
@@ -19,6 +21,10 @@ class FuncBar {
     icon_on = loadImage("icon_on.png");
     icon.resize(26,28);
     icon_on.resize(26,28);
+    camera = loadImage("camera.png");
+    camera.resize(28,28);
+    send = loadImage("send.png");
+    send.resize(28,28);
     
     facemojiTrigger = cp5.addButton("trigger")
                          .setImage(icon)
@@ -28,7 +34,7 @@ class FuncBar {
     draft = new TextInput(cp5, "draft");
     draft.setColor(0)
          .setColorBackground(#FAFAFA)
-         .setSize(width*2/3,28)
+         .setSize(325,28)
          .setFocus(false)
          .setFont(createFont("arial",15))
          .setLabelVisible(true);
@@ -42,13 +48,19 @@ class FuncBar {
     fill(255);
     noStroke();
     rect(xPos,yPos,width,barHeight);
-    facemojiTrigger.setPosition(xPos + 7 + width*2/3 + 30,yPos+7);
     draft.setPosition(xPos + 7,yPos+7);
     if (!draft.getText().equals("")) {
       textSize(20);
       fill(#00bfff);
-      text("Send", xPos + width*2/3 + 70, yPos+barHeight/2-10, sdBtnW, sdBtnH);
-    }      
+      draft.setSize(290, 28);
+      image(camera, xPos + 290 + 7*2,yPos+7);
+      facemojiTrigger.setPosition(xPos + 290 + 28 + 7*3,yPos+7);
+      image(send, xPos + 290 + 28 + 26 + 7*4, yPos + 7);
+    } else {
+      facemojiTrigger.setPosition(xPos + 325 + 28 + 7*3,yPos+7);
+      image(camera, xPos + 325 + 7*2,yPos+7);
+      draft.setSize(325, 28);
+    }
     popMatrix();
   }
   
