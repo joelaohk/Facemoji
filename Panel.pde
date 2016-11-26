@@ -3,7 +3,7 @@ class FacemojiPanel {
   private OpenCV opencv;
   private OscP5 oscp5;
   private float camX, camY;
-  private int camH;
+  private int camW, camH;
   private boolean panelUp = false;
   private ArrayList<PImage> recents;
   private float emojiLength = 45;
@@ -39,6 +39,7 @@ class FacemojiPanel {
     cam = new Capture(pa, 320, 240);
     cam.start();
     camY = height;
+    camW = 280;
     camH = 683*width/1242;
     recents = new ArrayList<PImage>();
     
@@ -59,13 +60,13 @@ class FacemojiPanel {
     fill(140);
     rect(camX,camY,width,camH);
     if (cam.available()==true) cam.read();
-    cropped = cam.get((320-camH)/2,0,camH,camH);
+    cropped = cam.get((320-camW)/2,0,camW,camH);
     image(cropped, camX, camY);
     opencv.loadImage(cropped);
     faces = opencv.detect();
     
-    float recentWidth = width - camH;
-    float recentXPos = camX + camH;
+    float recentWidth = width - camW;
+    float recentXPos = camX + camW;
     imageMode(CENTER);
     for (int i = 0; i < 8; i++) {
       float xPos, yPos;

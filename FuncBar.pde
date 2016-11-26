@@ -2,7 +2,6 @@ class FuncBar {
   int barHeight = 42;
   float xPos;
   float yPos;
-  float sdBtnW, sdBtnH;
   boolean funcBarUp = false;
   controlP5.Button facemojiTrigger;
   TextInput draft;
@@ -14,15 +13,13 @@ class FuncBar {
   public FuncBar() {
     
     yPos = height-barHeight;
-    sdBtnW = 55;
-    sdBtnH = 35;
     
     icon = loadImage("icon.png");
     icon_on = loadImage("icon_on.png");
     icon.resize(26,28);
     icon_on.resize(26,28);
     camera = loadImage("camera.png");
-    camera.resize(28,28);
+    camera.resize(32,32);
     send = loadImage("send.png");
     send.resize(28,28);
     
@@ -91,9 +88,9 @@ class FuncBar {
   }
   
   void mousePressed() {
-    float dx = mouseX - (xPos + width*2.0/3.0 + 70);
-    float dy = mouseY - yPos+barHeight/2.0-10;
-    if (dx > 0 && dx < sdBtnW && dy > 0 && dy < sdBtnH && !draft.getText().equals("")) {
+    float dx = mouseX - (xPos + 290 + 28 + 26 + 7*4);
+    float dy = mouseY - (yPos+7);
+    if (dx > 0 && dx < 28 && dy > 0 && dy < 28 && !draft.getText().equals("")) {
       println("dude");
       draft.submit();
     }

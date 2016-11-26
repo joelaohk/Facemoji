@@ -10,6 +10,7 @@ int currScreen;
 int currContact;
 
 float chatScreenXPos;
+float easing = 0.35;
 
 ContactScreen contactScreen;
 ChatScreen chatScreen;
@@ -31,6 +32,7 @@ void setup() {
 
 
 void draw() {
+  smooth();
   background(220);
   contactScreen.display(0);
   chatScreen.display(chatScreenXPos,currContact);
@@ -57,13 +59,15 @@ void setCurrContact(int i) {
 
 void chatScreenSlideIn() {
   if (chatScreenXPos > 0) {
-    chatScreenXPos -= 45;
+    float dx = chatScreenXPos - 0;
+    chatScreenXPos -= dx*easing;
   }
 }
 
 void chatScreenSlideOut() {
   if (chatScreenXPos < width) {
-    chatScreenXPos += 45;
+    float dx = width - chatScreenXPos;
+    chatScreenXPos += dx*easing;
   }
 }
 
