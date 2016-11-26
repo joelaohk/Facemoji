@@ -43,7 +43,7 @@ class FacemojiPanel {
     camH = 683*width/1242;
     recents = new ArrayList<PImage>();
     
-    opencv = new OpenCV(pa, camH, camH);
+    opencv = new OpenCV(pa, camW, camH);
     opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);
     
     oscp5 = new OscP5(this, 8338);
@@ -158,14 +158,24 @@ class FacemojiPanel {
       else if (emoji==3) 
         emoji_img = loadImage("emoji/bored.png");
         
-      if (faces.length>0) {
+      if (faces.length>0 && emoji != 0) {
         try {
           image(emoji_img, camX + faces[0].x, camY + faces[0].y,faces[0].width,faces[0].height);
-        } catch (NullPointerException e) {}
+          
+        } catch (NullPointerException e) {println ("no dude");}
         
+      } else if (emoji == 0) {
+        pushMatrix();
+        println("hey!!");
+        fill(#CC0000);
+        rect(camX, camY, camW, 30);
+        textSize(20);
+        fill(255);
+        textAlign(CENTER);
+        text("No emoji found", camX, camY+2, camW, 30);
+        textAlign(LEFT);
+        popMatrix();
       }
-      
-      
     }
   }
   
@@ -175,7 +185,8 @@ class FacemojiPanel {
         float dx = mouseX - (camX + faces[0].x);
         float dy = mouseY - (camY + faces[0].y);
         if (dx > 0 && dx < faces[0].width && dy > 0 && dy < faces[0].height) {
-          Chat c = new FacemojiChat(0, emoji_img, cropped);
+          PImage cropSave = cropped.get((camW-camH)/2,0,camH,camH);
+          Chat c = new FacemojiChat(0, emoji_img, cropSave);
           chatScreen.getChatManager().addChat(c);
         }
       }
