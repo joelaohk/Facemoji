@@ -10,26 +10,27 @@ class ContactScreen {
     chat1 = loadImage("chat1.jpg"); 
     chat2 = loadImage("chat2.jpg"); 
     chat3 = loadImage("chat3.jpg"); 
-    setting = loadImage("setting.jpg");
+    setting = loadImage("setting.png");
+    setting.resize(width,(width/690)*166);
   }
   
   void display(float x){
     xPos = x;
     pushMatrix();
     fill(0, 102, 204);
-    rect(0 , 0 , 405, 100);
+    rect(0 , 0 , width, 90);
     font = createFont("Arial", 40);
     title = "Chats         +";
     
     image(chat1, 0, 105);
     image(chat2, 0, 210);
     image(chat3, 0, 315);
-    image(setting, 0, 620);
+    image(setting, 0, height - setting.height);
     
     fill(255, 255, 255);
     textFont(font);
     textSize(40);
-    text(title, 150, 65);
+    text(title, 150, 60);
     popMatrix();
   }
   

@@ -28,11 +28,11 @@ void setup() {
   contactScreen = new ContactScreen();
   chatScreen = new ChatScreen(this);
   
+  smooth();
 }
 
 
 void draw() {
-  smooth();
   background(220);
   contactScreen.display(0);
   chatScreen.display(chatScreenXPos,currContact);
