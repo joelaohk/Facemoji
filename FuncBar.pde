@@ -34,7 +34,7 @@ class FuncBar {
          .setSize(325,28)
          .setFocus(false)
          .setFont(createFont("arial",15))
-         .setLabelVisible(true);
+         .setLabelVisible(false);
     
     
   }
