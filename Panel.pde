@@ -168,9 +168,9 @@ class FacemojiPanel {
         
       if (faces.length>0 && emoji != 0) {
         try {
-          emoji_img = emojis.get(emoji).first;
+          emoji_img = emojis.get(emoji-1).first;
           image(emoji_img, camX + faces[0].x, camY + faces[0].y,faces[0].width,faces[0].height);
-          related = emojis.get(emoji).related;
+          related = emojis.get(emoji-1).related;
           
         } catch (NullPointerException e) {println ("no dude");}
         
