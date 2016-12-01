@@ -1,14 +1,33 @@
 {
 	"emoji": [
-		"bored.png",
-		"flushed.png",
-		"grin.png",
-		"kissing_face.png",
-		"pensive_face.png",
-		"scream.png",
-		"smiling_open_mouth.png",
-		"smiling.png",
-		"stuck_out_tongue.png",
-		"tears_of_joy.png"
+		{
+			"first": "scream.png",
+			"related": [
+				"fearful.png",
+				"anguished.png",
+				"frown.png",
+				"hush.png",
+				"surprised.png",
+				"dizzy.png"
+			]
+		},
+		{
+			"first": "grin.png",
+			"related": [
+				"grinmacing.png",
+				"smiling_open_mouth.png",
+				"smiling.png"
+			]
+		},
+		{
+			"first": "bored.png",
+			"related": [
+				"expressionless.png",
+				"flushed.png",
+				"pensive.png",
+				"confused.png",
+				"sad.png"
+			]
+		}
 	]
 }

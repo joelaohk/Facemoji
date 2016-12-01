@@ -5,7 +5,8 @@ class FacemojiPanel {
   private float camX, camY;
   private int camW, camH;
   private boolean panelUp = false;
-  private ArrayList<PImage> recents;
+  private ArrayList<Emoji> emojis;
+  private ArrayList<PImage> related;
   private float emojiLength = 45;
   private Rectangle[] faces;
   
@@ -32,6 +33,7 @@ class FacemojiPanel {
   int max=0;
   int time=0;
   int emoji_chosen=0;
+  float relatedXPos, relatedWidth;
   PImage emoji_img;
   PImage cropped;
   
@@ -41,7 +43,8 @@ class FacemojiPanel {
     camY = height;
     camW = 280;
     camH = 683*width/1242;
-    recents = new ArrayList<PImage>();
+    emojis = new ArrayList<Emoji>();
+    related = new ArrayList<PImage>();
     
     opencv = new OpenCV(pa, camW, camH);
     opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);
@@ -65,19 +68,19 @@ class FacemojiPanel {
     opencv.loadImage(cropped);
     faces = opencv.detect();
     
-    float recentWidth = width - camW;
-    float recentXPos = camX + camW;
+    relatedWidth = width - camW;
+    relatedXPos = camX + camW;
     imageMode(CENTER);
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8 && i < related.size(); i++) {
       float xPos, yPos;
       if (i%2 == 0) {
-        xPos = recentXPos + recentWidth * 1/4;
+        xPos = relatedXPos + relatedWidth * 1/4;
         yPos = camY + camH * ((i/2.0 + 1)/5.0);
-        image(recents.get(i),xPos, yPos, emojiLength, emojiLength);
+        image(related.get(i),xPos, yPos, emojiLength, emojiLength);
       } else {
-        xPos = recentXPos + recentWidth * 3/4;
+        xPos = relatedXPos + relatedWidth * 3/4;
         yPos = camY + camH * (ceil(i/2.0)/5.0);
-        image(recents.get(i),xPos, yPos, emojiLength, emojiLength);
+        image(related.get(i),xPos, yPos, emojiLength, emojiLength);
       }
     }
     imageMode(CORNER);
@@ -101,15 +104,22 @@ class FacemojiPanel {
   void loadEmojisData() {
     JSONArray emojiJsonA = loadJSONObject("emoji.json").getJSONArray("emoji");
     for (int i = 0; i < emojiJsonA.size(); i++) {
-      String filename = emojiJsonA.getString(i);
-      PImage emoji = loadImage("emoji/" + filename);
-      recents.add(emoji);
+      JSONObject emojiJson = emojiJsonA.getJSONObject(i);
+      PImage first = loadImage("emoji/" + emojiJson.getString("first"));
+      JSONArray emojiA = emojiJson.getJSONArray("related");
+      ArrayList<PImage> related = new ArrayList<PImage>();
+      for (int j = 0; j < emojiA.size(); j++) {
+        PImage r = loadImage("emoji/" + emojiA.getString(j));
+        related.add(r);
+      }
+      Emoji e = new Emoji(first, related);
+      emojis.add(e);
     }
   }
   
   void placeEmojiOnFace() {
     if(found > 0) {
-      if (mouthWidth/mouthHeight>0.9 && mouthWidth/mouthHeight<3)
+      if (mouthWidth/mouthHeight>1.3 && mouthWidth/mouthHeight< 1.9)
       {
         if (emoji==1)
           time++;
@@ -120,7 +130,7 @@ class FacemojiPanel {
         //println("emoji: "+emoji);
         //println("time: "+time);
       }
-      else if (mouthWidth/mouthHeight>3 && mouthWidth/mouthHeight<8)
+      else if (mouthWidth/mouthHeight>3.8 && mouthWidth/mouthHeight<6.3)
       {
         if (emoji==2)
           time++;
@@ -131,7 +141,7 @@ class FacemojiPanel {
         println("emoji: "+emoji);
         println("time: "+time);    
       }
-      else if (mouthWidth/mouthHeight>8 && mouthWidth/mouthHeight<16)
+      else if (mouthWidth/mouthHeight>11 && mouthWidth/mouthHeight<15)
       {
         if (emoji==3)
           time++;
@@ -144,23 +154,23 @@ class FacemojiPanel {
       }
       else
       {
-        time=0; 
+        if (emoji==0)
+          time++;
+        else
+          time=0;
+         
         emoji=0;
         println("emoji: "+emoji);
         println("time: "+time);
       }
     }
     if (time >= 8) {
-      if (emoji==1) 
-        emoji_img = loadImage("emoji/scream.png");
-      else if (emoji==2)
-        emoji_img = loadImage("emoji/grin.png");
-      else if (emoji==3) 
-        emoji_img = loadImage("emoji/bored.png");
         
       if (faces.length>0 && emoji != 0) {
         try {
+          emoji_img = emojis.get(emoji).first;
           image(emoji_img, camX + faces[0].x, camY + faces[0].y,faces[0].width,faces[0].height);
+          related = emojis.get(emoji).related;
           
         } catch (NullPointerException e) {println ("no dude");}
         
@@ -175,23 +185,60 @@ class FacemojiPanel {
         text("No emoji found", camX, camY+2, camW, 30);
         textAlign(LEFT);
         popMatrix();
+        
+        related = new ArrayList<PImage>();
       }
     }
   }
   
   void mousePressed() {
     if (panelUp) {
-      if(faces.length>0) {
-        float dx = mouseX - (camX + faces[0].x);
-        float dy = mouseY - (camY + faces[0].y);
-        if (dx > 0 && dx < faces[0].width && dy > 0 && dy < faces[0].height) {
-          PImage cropSave = cropped.get((camW-camH)/2,0,camH,camH);
-          Chat c = new FacemojiChat(0, emoji_img, cropSave);
-          chatScreen.getChatManager().addChat(c);
+      if(faces.length>0 && emoji != 0) {
+        if (withinCamArea()) {
+          float dx = mouseX - (camX + faces[0].x);
+          float dy = mouseY - (camY + faces[0].y);
+          if (dx > 0 && dx < faces[0].width && dy > 0 && dy < faces[0].height) {
+            PImage cropSave = cropped.get((camW-camH)/2,0,camH,camH);
+            Chat c = new FacemojiChat(0, emoji_img, cropSave);
+            chatScreen.getChatManager().addChat(c);
+          }
+        } else if (withinRelatedArea()) {
+          for (int i = 0; i < related.size(); i++) {
+            float xPos, yPos;
+            if (i%2 == 0) {
+              xPos = relatedXPos + relatedWidth * 1/4;
+              yPos = camY + camH * ((i/2.0 + 1)/5.0);
+            } else {
+              xPos = relatedXPos + relatedWidth * 3/4;
+              yPos = camY + camH * (ceil(i/2.0)/5.0);
+            }
+            float dx = mouseX - xPos;
+            float dy = mouseY - yPos;
+            if (dx > -emojiLength/2 && dx < emojiLength/2 && dy > -emojiLength/2 && dy < emojiLength/2) {
+              PImage cropSave = cropped.get((camW-camH)/2,0,camH,camH);
+              Chat c = new FacemojiChat(0, related.get(i), cropSave);
+              chatScreen.getChatManager().addChat(c);
+            }
+          }
         }
+        
       }
     }
     
+  }
+  
+  boolean withinCamArea() {
+    float dx = mouseX - camX;
+    float dy = mouseY - camY;
+    if (dx > 0 && dx < camW && dy > 0 && dy < camH) return true;
+    else return false;
+  }
+  
+  boolean withinRelatedArea() {
+    float dx = mouseX - relatedXPos;
+    float dy = mouseY - (camY);
+    if (dx > 0 && dx < relatedWidth && dy > 0 && dy < camH) return true;
+    else return false;
   }
   
   // OSC CALLBACK FUNCTIONS
